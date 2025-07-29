@@ -24,6 +24,11 @@ export default function Header({ headerRef }: HeaderProps) {
               <span className="text-white font-bold text-xl">N</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">News Aggregator</h1>
+            {mounted && (
+              <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
+                ({theme} mode)
+              </span>
+            )}
           </div>
           <div className="flex items-center space-x-4">
             {mounted && (
