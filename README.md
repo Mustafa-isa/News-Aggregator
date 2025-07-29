@@ -1,36 +1,179 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# News Aggregator - Beyond Creation
 
-## Getting Started
+A modern news aggregator built with Next.js, TypeScript, Tailwind CSS, and GSAP animations.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Modern UI/UX**: Clean, responsive design with dark mode support
+- **Search Functionality**: Real-time search across content, authors, and categories
+- **Category Filtering**: Filter news by different categories with emoji icons
+- **GSAP Animations**: Smooth animations and transitions throughout the app
+- **Responsive Design**: Works perfectly on mobile, tablet, and desktop
+- **TypeScript**: Full type safety and better development experience
+
+## 🏗️ Architecture
+
+### Clean Code Principles Applied
+
+#### **DRY (Don't Repeat Yourself)**
+- ✅ Shared types in `src/utils/constants.ts`
+- ✅ Reusable utility functions in `src/utils/helpers.ts`
+- ✅ Custom hooks for common functionality
+- ✅ Component composition to avoid code duplication
+
+#### **KISS (Keep It Simple, Stupid)**
+- ✅ Simple, focused components with single responsibilities
+- ✅ Clear separation of concerns
+- ✅ Minimal dependencies
+- ✅ Straightforward state management
+
+#### **SOLID Principles**
+- ✅ **Single Responsibility**: Each component has one clear purpose
+- ✅ **Open/Closed**: Components are extensible without modification
+- ✅ **Interface Segregation**: Clean, focused interfaces
+- ✅ **Dependency Inversion**: Dependencies injected through props
+
+### Project Structure
+
+```
+src/
+├── app/
+│   ├── page.tsx              # Main page (clean and minimal)
+│   ├── layout.tsx            # Root layout
+│   └── globals.css           # Global styles
+├── components/
+│   ├── Header.tsx            # Header component
+│   ├── SearchSection.tsx     # Search and filter functionality
+│   ├── NewsCard.tsx          # Individual news article card
+│   ├── NewsGrid.tsx          # Grid layout for articles
+│   └── Footer.tsx            # Footer component
+├── hooks/
+│   ├── useGSAP.ts            # GSAP loading and management
+│   └── useNewsAnimations.ts  # Animation logic separation
+├── utils/
+│   ├── constants.ts          # Shared types and data
+│   └── helpers.ts            # Utility functions
+└── types/
+    └── news.ts               # TypeScript interfaces
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Component Separation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### **Header Component**
+- Handles navigation and branding
+- Clean, reusable header design
+- Proper ref forwarding for animations
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### **SearchSection Component**
+- Search input with real-time filtering
+- Category filter buttons
+- Clean prop interface for event handling
 
-## Learn More
+#### **NewsCard Component**
+- Individual article display
+- Image handling with Next.js Image
+- Hover animations and interactions
 
-To learn more about Next.js, take a look at the following resources:
+#### **NewsGrid Component**
+- Grid layout management
+- Loading and empty states
+- Responsive design handling
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### **Footer Component**
+- Simple, reusable footer
+- Consistent styling with the rest of the app
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Custom Hooks
 
-## Deploy on Vercel
+#### **useGSAP Hook**
+- Manages GSAP loading and initialization
+- Prevents hydration issues
+- Provides clean interface for animations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+#### **useNewsAnimations Hook**
+- Centralizes all animation logic
+- Separates concerns from UI components
+- Provides reusable animation handlers
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Utility Functions
+
+#### **Constants (`src/utils/constants.ts`)**
+- Shared TypeScript interfaces
+- Mock data for development
+- Category definitions
+- Single source of truth for data structures
+
+#### **Helpers (`src/utils/helpers.ts`)**
+- Date formatting utilities
+- Article filtering logic
+- Reusable functions following DRY principle
+
+## 🎨 Design Features
+
+- **Gradient Backgrounds**: Modern gradient design
+- **Glass Morphism**: Backdrop blur effects
+- **Smooth Transitions**: CSS and GSAP animations
+- **Dark Mode**: Automatic dark mode support
+- **Responsive Grid**: Adaptive layout for all screen sizes
+
+## 🎭 Animations
+
+- **Page Load**: Header slide-in, search section fade-in
+- **Card Interactions**: Hover lift and scale effects
+- **Search Focus**: Input scaling animations
+- **Category Selection**: Button press animations
+- **Grid Updates**: Staggered card animations
+
+## 🛠️ Technical Stack
+
+- **Next.js 15**: App Router with TypeScript
+- **React 19**: Latest React features
+- **TypeScript**: Full type safety
+- **Tailwind CSS v4**: Modern styling
+- **GSAP**: Professional animations
+- **Turbopack**: Fast development builds
+
+## 🚀 Getting Started
+
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Run development server**:
+   ```bash
+   npm run dev
+   ```
+
+3. **Open in browser**:
+   ```
+   http://localhost:3000
+   ```
+
+## 📱 Responsive Design
+
+- **Mobile**: Single column layout with touch-friendly interactions
+- **Tablet**: Two-column grid layout
+- **Desktop**: Three-column grid with hover effects
+
+## 🎯 Best Practices Implemented
+
+- **Component Separation**: Each component has a single responsibility
+- **Type Safety**: Full TypeScript implementation
+- **Performance**: Optimized images and animations
+- **Accessibility**: Proper ARIA labels and semantic HTML
+- **SEO**: Meta tags and proper document structure
+- **Error Handling**: Graceful error states and loading indicators
+
+## 🔧 Future Enhancements
+
+- Real API integration (NewsAPI, Guardian, etc.)
+- User authentication
+- Bookmark functionality
+- Share features
+- Advanced filtering options
+- Offline support with PWA
+
+---
+
+Built with ❤️ for the Beyond Creation frontend challenge

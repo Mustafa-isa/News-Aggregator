@@ -1,18 +1,21 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Header from '../components/Header';
-import SearchSection from '../components/SearchSection';
-import NewsGrid from '../components/NewsGrid';
-import Footer from '../components/Footer';
+import dynamic from 'next/dynamic';
+import Header from './Header';
+import SearchSection from './SearchSection';
+import NewsGrid from './NewsGrid';
+import Footer from './Footer';
 import { CATEGORIES, MOCK_ARTICLES, NewsArticle } from '../utils/constants';
 import { formatDate, filterArticles } from '../utils/helpers';
 import { useNewsAnimations } from '../hooks/useNewsAnimations';
 
-export default function Home() {
-  // Loading state to prevent hydration issues
-  const [isLoading, setIsLoading] = useState(true);
-  
+// Dynamically import components to avoid SSR
+const DynamicHeader = dynamic(() => import('./Header'), { ssr: false });
+const DynamicSearchSection = dynamic(() => import('./SearchSection'), { ssr: false });
+const DynamicNewsGrid = dynamic(() => import('./NewsGrid'), { ssr: false });
+
+export default function DynamicPage() {
   // State management
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(false);
@@ -26,16 +29,14 @@ export default function Home() {
   const cardsRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Initialize everything after mount
+  // Initialize data
   useEffect(() => {
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      setArticles(MOCK_ARTICLES);
-      setIsClient(true);
-      setIsLoading(false);
-    }, 100);
+    setArticles(MOCK_ARTICLES);
+  }, []);
 
-    return () => clearTimeout(timer);
+  // Set client flag after hydration
+  useEffect(() => {
+    setIsClient(true);
   }, []);
 
   // Filter articles based on search and category
@@ -66,23 +67,11 @@ export default function Home() {
     handleCategoryClick(categoryId, setSelectedCategory);
   };
 
-  // Show loading state until everything is ready
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading News Aggregator...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <Header headerRef={headerRef} />
+      <DynamicHeader headerRef={headerRef} />
       
-      <SearchSection
+      <DynamicSearchSection
         searchQuery={searchQuery}
         selectedCategory={selectedCategory}
         onSearchChange={handleSearchChange}
@@ -95,7 +84,7 @@ export default function Home() {
       />
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <NewsGrid
+        <DynamicNewsGrid
           articles={filteredArticles}
           loading={loading}
           onCardHover={handleCardHover}
@@ -108,4 +97,4 @@ export default function Home() {
       <Footer />
     </div>
   );
-}
+} 
