@@ -4,19 +4,20 @@ A modern news aggregator built with Next.js, TypeScript, Tailwind CSS, and GSAP 
 
 ## 🚀 Features
 
-- **Modern UI/UX**: Clean, responsive design with dark mode support
-- **Search Functionality**: Real-time search across content, authors, and categories
-- **Category Filtering**: Filter news by different categories with emoji icons
-- **GSAP Animations**: Smooth animations and transitions throughout the app
-- **Responsive Design**: Works perfectly on mobile, tablet, and desktop
-- **TypeScript**: Full type safety and better development experience
+- **📰 Multi-Source News**: Fetch articles from The Guardian and The New York Times APIs
+- **🌙 Dark/Light Mode**: Toggle between dark and light themes with smooth transitions
+- **🔍 Search Functionality**: Search through articles with real-time filtering
+- **📱 Responsive Design**: Optimized for all devices and screen sizes
+- **🎨 Modern UI**: Clean, modern interface with GSAP animations
+- **🌐 Internationalization**: Support for English and Arabic with RTL layout
+- **📄 Pagination**: Navigate through articles with server-side pagination
+- **⚡ Performance**: Optimized loading and caching strategies
 
 ## 🏗️ Architecture
 
 ### Clean Code Principles Applied
 
 #### **DRY (Don't Repeat Yourself)**
-- ✅ Shared types in `src/utils/constants.ts`
 - ✅ Reusable utility functions in `src/utils/helpers.ts`
 - ✅ Custom hooks for common functionality
 - ✅ Component composition to avoid code duplication
@@ -37,24 +38,40 @@ A modern news aggregator built with Next.js, TypeScript, Tailwind CSS, and GSAP 
 
 ```
 src/
-├── app/
-│   ├── page.tsx              # Main page (clean and minimal)
-│   ├── layout.tsx            # Root layout
-│   └── globals.css           # Global styles
-├── components/
-│   ├── Header.tsx            # Header component
-│   ├── SearchSection.tsx     # Search and filter functionality
-│   ├── NewsCard.tsx          # Individual news article card
-│   ├── NewsGrid.tsx          # Grid layout for articles
-│   └── Footer.tsx            # Footer component
-├── hooks/
-│   ├── useGSAP.ts            # GSAP loading and management
-│   └── useNewsAnimations.ts  # Animation logic separation
-├── utils/
-│   ├── constants.ts          # Shared types and data
-│   └── helpers.ts            # Utility functions
-└── types/
-    └── news.ts               # TypeScript interfaces
+├── app/                    # Next.js App Router
+│   ├── layout.tsx         # Root layout with providers
+│   ├── page.tsx           # Home page
+│   └── news/[id]/         # Dynamic article pages
+├── components/             # Reusable UI components
+│   ├── Header.tsx         # Navigation header
+│   ├── Footer.tsx         # Footer component
+│   ├── NewsCard.tsx       # Article card component
+│   ├── NewsGrid.tsx       # Grid layout for articles
+│   ├── SearchSection.tsx  # Search functionality
+│   ├── Pagination.tsx     # Pagination controls
+│   ├── ClientOnly.tsx     # Client-side only wrapper
+│   └── ErrorBoundary.tsx  # Error handling component
+├── contexts/              # React Context providers
+│   ├── ThemeContext.tsx   # Dark/light theme state
+│   └── LanguageContext.tsx # i18n language state
+├── hooks/                 # Custom React hooks
+│   ├── useNewsService.ts  # News data management
+│   ├── useNewsAnimations.ts # GSAP animations
+│   └── useGSAP.ts         # GSAP integration
+├── services/              # API and data services
+│   ├── NewsService.ts     # Main service orchestrator
+│   └── providers/         # API provider implementations
+│       ├── GuardianProvider.ts
+│       ├── NYTProvider.ts
+│       └── NewsAPIProvider.ts
+├── types/                 # TypeScript type definitions
+│   ├── api.ts            # API interfaces
+│   └── news.ts           # News-specific types
+├── utils/                 # Utility functions
+│   ├── helpers.ts        # Helper functions
+│   └── translations.ts   # i18n translations
+└── config/               # Configuration files
+    └── providers.ts      # API provider configuration
 ```
 
 ### Component Separation
@@ -66,7 +83,6 @@ src/
 
 #### **SearchSection Component**
 - Search input with real-time filtering
-- Category filter buttons
 - Clean prop interface for event handling
 
 #### **NewsCard Component**
@@ -97,12 +113,6 @@ src/
 
 ### Utility Functions
 
-#### **Constants (`src/utils/constants.ts`)**
-- Shared TypeScript interfaces
-- Mock data for development
-- Category definitions
-- Single source of truth for data structures
-
 #### **Helpers (`src/utils/helpers.ts`)**
 - Date formatting utilities
 - Article filtering logic
@@ -121,8 +131,14 @@ src/
 - **Page Load**: Header slide-in, search section fade-in
 - **Card Interactions**: Hover lift and scale effects
 - **Search Focus**: Input scaling animations
-- **Category Selection**: Button press animations
 - **Grid Updates**: Staggered card animations
+
+### Animation Features
+
+- **Smooth Transitions**: GSAP-powered animations throughout the app
+- **Hover Effects**: Interactive card hover animations
+- **Loading States**: Animated loading spinners and skeletons
+- **Theme Transitions**: Smooth dark/light mode switching
 
 ## 🛠️ Technical Stack
 

@@ -11,7 +11,6 @@ export interface NewsArticle {
     id: string;
     name: string;
   };
-  category?: string;
 }
 
 export interface NewsAPIResponse {
@@ -52,7 +51,6 @@ export interface GuardianResponse {
 
 export interface SearchFilters {
   query: string;
-  category: string;
   source: string;
   sortBy: 'relevancy' | 'popularity' | 'publishedAt';
 }
@@ -62,7 +60,6 @@ export interface NewsSource {
   name: string;
   description: string;
   url: string;
-  category: string;
   language: string;
   country: string;
 } 

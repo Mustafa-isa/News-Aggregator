@@ -4,20 +4,25 @@ import { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import SearchSection from '../components/SearchSection';
 import NewsGrid from '../components/NewsGrid';
+import Pagination from '../components/Pagination';
+import ClientOnly from '../components/ClientOnly';
+import ErrorBoundary from '../components/ErrorBoundary';
+import LoadingSpinner from '../components/LoadingSpinner';
 import Footer from '../components/Footer';
-import { CATEGORIES, MOCK_ARTICLES, NewsArticle } from '../utils/constants';
 import { formatDate, filterArticles } from '../utils/helpers';
 import { useNewsAnimations } from '../hooks/useNewsAnimations';
+import { useTheme } from '../contexts/ThemeContext';
+import { useNewsService } from '../hooks/useNewsService';
+import { BaseNewsArticle } from '../types/api';
 
-export default function Home() {
-  // Loading state to prevent hydration issues
+function HomeContent() {
+  const { theme } = useTheme();
+  const { articles, loading, error, pagination, fetchArticles, searchArticles } = useNewsService();
+  
   const [isLoading, setIsLoading] = useState(true);
   
-  // State management
-  const [articles, setArticles] = useState<NewsArticle[]>([]);
-  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('general');
+  const [currentPage, setCurrentPage] = useState(1);
   const [isClient, setIsClient] = useState(false);
   
   // Refs for animations
@@ -26,86 +31,147 @@ export default function Home() {
   const cardsRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Initialize everything after mount
   useEffect(() => {
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      setArticles(MOCK_ARTICLES);
-      setIsClient(true);
-      setIsLoading(false);
+    const timer = setTimeout(async () => {
+      try {
+        // Fetch initial data from both Guardian and NYT
+        await fetchArticles({ pageSize: 12, page: 1 });
+        setIsClient(true);
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+      } finally {
+        setIsLoading(false);
+      }
     }, 100);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [fetchArticles]);
 
-  // Filter articles based on search and category
-  const filteredArticles = filterArticles(articles, searchQuery, selectedCategory);
+  // Handle page changes
+  const handlePageChange = async (page: number) => {
+    console.log(`Changing to page ${page}`);
+    setCurrentPage(page);
+    try {
+      await fetchArticles({ 
+        pageSize: 12, 
+        page,
+        searchQuery: searchQuery.trim() || undefined
+      });
+      // Scroll to top when page changes
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
+      console.error('Error fetching page:', error);
+    }
+  };
+
+  // Handle search with pagination reset
+  const handleSearchChange = async (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1); // Reset to first page on search
+    
+    if (query.trim()) {
+      console.log('Searching for:', query);
+      await searchArticles(query);
+    } else {
+      console.log('Fetching all articles');
+      await fetchArticles({ pageSize: 12, page: 1 });
+    }
+  };
+
 
   // Animation handlers
   const {
     handleSearchFocus,
     handleSearchBlur,
     handleCardHover,
-    handleCardLeave,
-    handleCategoryClick
+    handleCardLeave
   } = useNewsAnimations({
     isClient,
     headerRef,
     searchSectionRef,
     cardsRef,
     searchInputRef,
-    filteredArticles
+    articles
   });
 
-  // Event handlers
-  const handleSearchChange = (query: string) => {
-    setSearchQuery(query);
-  };
+  useEffect(() => {
+    if (articles.length > 0) {
+      const guardianArticles = articles.filter(a => a.source.id === 'guardian');
+      const nytArticles = articles.filter(a => a.source.id === 'nyt');
+      
+    }
+  }, [articles, pagination]);
 
-  const handleCategoryChange = (categoryId: string) => {
-    handleCategoryClick(categoryId, setSelectedCategory);
-  };
+  // Debug: Log pagination rendering
+  useEffect(() => {
+    if (pagination) {
+      console.log('Pagination component should render with:', pagination);
+    }
+  }, [pagination]);
 
-  // Show loading state until everything is ready
+  const mainContainerClasses = theme === 'dark'
+    ? "min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700"
+    : "min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50";
+
+  const loadingContainerClasses = theme === 'dark'
+    ? "min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center"
+    : "min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 flex items-center justify-center";
+
+  const loadingCardClasses = theme === 'dark'
+    ? "text-center bg-gray-800/90 backdrop-blur-sm rounded-xl p-8 shadow-lg border border-gray-700"
+    : "text-center bg-white/90 backdrop-blur-sm rounded-xl p-8 shadow-lg border border-gray-200";
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 flex items-center justify-center">
-        <div className="text-center bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto mb-4"></div>
-          <p className="text-gray-700 dark:text-gray-300">Loading News Aggregator...</p>
-        </div>
-      </div>
+      <LoadingSpinner 
+        size="2xl" 
+        text="Loading News Aggregator..." 
+        color="purple"
+        overlay={true}
+      />
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
+    <div className={mainContainerClasses}>
       <Header headerRef={headerRef} />
-      
       <SearchSection
         searchQuery={searchQuery}
-        selectedCategory={selectedCategory}
         onSearchChange={handleSearchChange}
-        onCategoryChange={handleCategoryChange}
         onSearchFocus={handleSearchFocus}
         onSearchBlur={handleSearchBlur}
         searchSectionRef={searchSectionRef}
         searchInputRef={searchInputRef}
-        categories={CATEGORIES}
       />
-
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         <NewsGrid
-          articles={filteredArticles}
+          articles={articles}
           loading={loading}
           onCardHover={handleCardHover}
           onCardLeave={handleCardLeave}
           formatDate={formatDate}
           cardsRef={cardsRef}
         />
+        
+        <ClientOnly>
+          {pagination && (
+            <Pagination
+              pagination={pagination}
+              onPageChange={handlePageChange}
+              loading={loading}
+            />
+          )}
+        </ClientOnly>
       </section>
-
       <Footer />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    // <ErrorBoundary>
+      <HomeContent />
+    // </ErrorBoundary>
   );
 }

@@ -1,91 +1,62 @@
 'use client';
-
 import { useRef } from 'react';
-import Link from 'next/link';
-import { Category } from '../utils/constants';
+import { useTheme } from '../contexts/ThemeContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface SearchSectionProps {
   searchQuery: string;
-  selectedCategory: string;
   onSearchChange: (query: string) => void;
-  onCategoryChange: (categoryId: string) => void;
-  onSearchFocus: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onSearchBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onSearchFocus: () => void;
+  onSearchBlur: () => void;
   searchSectionRef: React.RefObject<HTMLElement | null>;
   searchInputRef: React.RefObject<HTMLInputElement | null>;
-  categories: Category[];
 }
 
 export default function SearchSection({
   searchQuery,
-  selectedCategory,
   onSearchChange,
-  onCategoryChange,
   onSearchFocus,
   onSearchBlur,
   searchSectionRef,
-  searchInputRef,
-  categories
+  searchInputRef
 }: SearchSectionProps) {
+  const { theme } = useTheme();
+  const { t, isRTL } = useLanguage();
+
+  const sectionClasses = theme === 'dark'
+    ? " backdrop-blur-sm "
+    : " backdrop-blur-sm ";
+
+  const inputClasses = theme === 'dark'
+    ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-400"
+    : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500";
+
   return (
-    <section ref={searchSectionRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            Stay Informed with the Latest News
-          </h2>
-          <p className="text-gray-700 dark:text-gray-300 text-lg">
-            Discover stories from trusted sources around the world
-          </p>
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative mb-8">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg className="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-          <input
-            ref={searchInputRef}
-            type="text"
-            placeholder="Search for news, authors, or categories..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            onFocus={onSearchFocus}
-            onBlur={onSearchBlur}
-            className="block w-full pl-10 pr-3 py-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-600 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-lg"
-          />
-        </div>
-
-        {/* Category Filters */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {categories.map((category) => (
-            <div key={category.id} className="flex">
-              <button
-                data-category={category.id}
-                onClick={() => onCategoryChange(category.id)}
-                className={`px-4 py-2 rounded-l-full text-sm font-medium transition-all duration-200 shadow-md ${
-                  selectedCategory === category.id
-                    ? 'bg-blue-600 text-white shadow-lg transform scale-105'
-                    : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:shadow-lg'
-                }`}
-              >
-                <span className="mr-2">{category.icon}</span>
-                {category.name}
-              </button>
-              <Link
-                href={`/category/${category.id}`}
-                className={`px-3 py-2 rounded-r-full text-sm font-medium transition-all duration-200 shadow-md border-l-0 ${
-                  selectedCategory === category.id
-                    ? 'bg-blue-600 text-white shadow-lg transform scale-105'
-                    : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:shadow-lg'
-                }`}
-              >
-                →
-              </Link>
+    <section 
+      ref={searchSectionRef}
+      className={`py-6 transition-all duration-300  ${sectionClasses}`}
+      dir={isRTL ? 'rtl' : 'ltr'}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Search Input */}
+        <div className="max-w-2xl mx-auto">
+          <div className="relative">
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              onFocus={onSearchFocus}
+              onBlur={onSearchBlur}
+              placeholder={t('common.searchPlaceholder')}
+              className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 ${inputClasses}`}
+            />
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none rtl:right-auto rtl:left-0 rtl:pr-0 rtl:pl-3">
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
