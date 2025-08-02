@@ -27,24 +27,19 @@ export default function LoadingSpinner({
   };
 
   const colorClasses = {
-    blue: theme === 'dark' ? 'border-blue-400' : 'border-blue-600',
-    green: theme === 'dark' ? 'border-green-400' : 'border-green-600',
-    purple: theme === 'dark' ? 'border-purple-400' : 'border-purple-600',
-    orange: theme === 'dark' ? 'border-orange-400' : 'border-orange-600',
-    pink: theme === 'dark' ? 'border-pink-400' : 'border-pink-600',
+    blue: 'border-blue-400',
+    green: 'border-green-400',
+    purple: 'border-purple-400',
+    orange: 'border-orange-400',
+    pink: 'border-pink-400',
     gradient: 'border-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500'
   };
 
-  const textClasses = theme === 'dark'
-    ? 'text-gray-300'
-    : 'text-gray-600';
+  const textClasses = 'text-gray-300';
 
-  const containerClasses = theme === 'dark'
-    ? 'flex flex-col items-center justify-center py-12'
-    : 'flex flex-col items-center justify-center py-12';
+  const containerClasses = 'flex flex-col items-center justify-center py-12';
 
-  const overlayClasses = overlay 
-    ? 'fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center'
+  const overlayClasses = overlay     ? 'fixed inset-0 bg-black backdrop-blur-md z-50 flex items-center justify-center'
     : '';
 
   const renderSpinner = () => {
@@ -53,7 +48,7 @@ export default function LoadingSpinner({
     return (
       <div className={`${sizeClasses[size]} relative`}>
         {/* Layer 1: Background glow */}
-        <div className={`absolute inset-0 rounded-full ${borderClass.replace('border-', 'bg-')} blur-xl opacity-20 animate-pulse`}></div>
+        <div className={`absolute inset-0 rounded-full ${borderClass.replace('border-', 'bg-')} blur-xl opacity-30 animate-pulse`}></div>
         
         {/* Layer 2: Outer ring with glow */}
         <div className={`absolute inset-0 rounded-full border-2 ${borderClass} animate-spin shadow-lg`}></div>
@@ -111,7 +106,7 @@ export default function LoadingSpinner({
       {/* Modern animated background */}
       <div className="relative mb-6">
         {/* Gradient glow effect */}
-        <div className={`absolute inset-0 rounded-full ${colorClasses[color].replace('border-', 'bg-')} blur-xl opacity-30 animate-pulse`}></div>
+        <div className={`absolute inset-0 rounded-full ${colorClasses[color].replace('border-', 'bg-')} blur-xl opacity-40 animate-pulse`}></div>
         {/* Main spinner */}
         {renderSpinner()}
       </div>
@@ -140,7 +135,7 @@ export default function LoadingSpinner({
   if (overlay) {
     return (
       <div className={overlayClasses}>
-        <div className={` bg-black backdrop-blur-xl rounded-2xl p-10 shadow-2xl border ${theme === 'dark' ? 'border-gray-700/50' : 'border-gray-200/50'} max-w-md w-full mx-4`}>
+        <div className="max-w-md w-full mx-4">
           {content}
         </div>
       </div>

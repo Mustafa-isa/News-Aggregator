@@ -34,7 +34,6 @@ function HomeContent() {
   useEffect(() => {
     const timer = setTimeout(async () => {
       try {
-        // Fetch initial data from both Guardian and NYT
         await fetchArticles({ pageSize: 12, page: 1 });
         setIsClient(true);
       } catch (error) {

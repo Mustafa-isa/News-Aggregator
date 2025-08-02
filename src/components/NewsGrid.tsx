@@ -42,7 +42,9 @@ export default function NewsGrid({
     : "text-gray-600";
 
   if (loading) {
-    return <LoadingSpinner size="lg" text="Loading articles..." color="gradient" />;
+    return <div className="flex justify-center items-center h-[500px]">
+      <LoadingSpinner size="lg" text="Loading articles..." color="gradient" />
+    </div>;
   }
 
   if (articles.length === 0) {
